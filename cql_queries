@@ -1,0 +1,40 @@
+groupBy([#DataSource], function=count())
+| sort(_count, order=desc)
+| limit(50)
+
+---
+
+Discover All Repositories and Data Sources
+cqlgroupBy([#repo, #data_source_name], function=count())
+| sort(_count, order=desc)
+| limit(100)
+
+
+Find Vulnerability / Spotlight Data Specifically
+#data_source_name = /spotlight|vuln|exposure/i
+| groupBy([#data_source_name, #event_simpleName], function=count())
+| sort(_count, order=desc)
+
+Find Any CVE References Across All Repos
+#repo = *
+| CVE_ID = *
+| groupBy([#repo, #data_source_name, #event_simpleName], function=count())
+| sort(_count, order=desc)
+| limit(50)
+
+If empty CVE,
+#repo = *
+| cve_id = *
+| groupBy([#repo, #data_source_name, #event_simpleName], function=count())
+| sort(_count, order=desc)
+| limit(50)
+
+Find Counter Adversary Ops Data
+#data_source_name = /adversary|intel|cao|threat/i
+| groupBy([#data_source_name, #event_simpleName], function=count())
+| sort(_count, order=desc)
+
+Broadest Possible — All Event Types Last 7 Days
+groupBy([#repo, #data_source_name, #event_simpleName], function=count())
+| sort(_count, order=desc)
+| limit(200)
